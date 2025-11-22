@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- 用户信息区域 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_bottom_sheet_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="王心凌"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_user_id"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="抖音号：CyndiWang905"-->
+<!--                android:textSize="12sp"-->
+<!--                android:textColor="#666" />-->
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- 选项列表 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 特别关注 -->
+        <LinearLayout
+            android:id="@+id/ll_special_follow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="特别关注"
+                android:textSize="14sp" />
+
+            <Switch
+                android:id="@+id/switch_special_follow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/CustomSwitch"/>
+
+        </LinearLayout>
+
+        <!-- 设置备注 -->
+        <LinearLayout
+            android:id="@+id/ll_set_remark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="设置备注"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/iv_set_note"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_edit" />
+
+        </LinearLayout>
+
+        <!-- 取消关注 -->
+        <LinearLayout
+            android:id="@+id/ll_cancel_follow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="取消关注"
+                android:textSize="14sp"
+                android:textColor="#FF0000" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_reduce" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

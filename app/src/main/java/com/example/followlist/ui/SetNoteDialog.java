@@ -1,0 +1,106 @@
+// SetNoteDialog.java
+package com.example.followlist.ui;
+
+import android.app.Dialog;
+import android.content.Context;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+
+import com.example.followlist.R;
+import com.example.followlist.model.UserBean;
+
+import java.io.Serializable;
+
+public class SetNoteDialog extends DialogFragment {
+    private UserBean mUserBean;
+    private OnNoteSetListener mListener;
+    private EditText mEditTextNote;
+    private Button mBtnCancel, mBtnConfirm;
+
+    public static String TAG = "SetNoteDialog";
+
+    public interface OnNoteSetListener {
+        void onNoteSet(UserBean userBean, String note);
+    }
+
+    public static SetNoteDialog newInstance(UserBean userBean) {
+        SetNoteDialog dialog = new SetNoteDialog();
+        Bundle args = new Bundle();
+        args.putParcelable("userBean", userBean);
+        dialog.setArguments(args);
+        return dialog;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnNoteSetListener) {
+            mListener = (OnNoteSetListener) context;
+        }
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (getArguments() != null) {
+            mUserBean = getArguments().getParcelable("userBean");
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View view = getLayoutInflater().inflate(R.layout.dialog_set_note, null);
+
+        initViews(view);
+        setupClickListeners();
+        builder.setView(view);
+
+        return builder.create();
+    }
+
+    private void initViews(View view) {
+        mEditTextNote = view.findViewById(R.id.et_note);
+        mBtnCancel = view.findViewById(R.id.btn_cancel);
+        mBtnConfirm = view.findViewById(R.id.btn_confirm);
+
+        // 设置当前备注
+        if (mUserBean != null && !TextUtils.isEmpty(mUserBean.getNote())) {
+            mEditTextNote.setText(mUserBean.getNote());
+            mEditTextNote.setSelection(mUserBean.getNote().length());
+        }
+    }
+
+    private void setupClickListeners() {
+        // 取消按钮点击事件
+        mBtnCancel.setOnClickListener(v -> {
+            dismiss(); // 关闭对话框
+        });
+
+        // 确认按钮点击事件
+        mBtnConfirm.setOnClickListener(v -> {
+            setNoteForUser();
+            dismiss(); // 关闭对话框
+        });
+    }
+
+    private void setNoteForUser() {
+        String note = mEditTextNote.getText().toString().trim();
+        if (mListener != null && mUserBean != null) {
+            mListener.onNoteSet(mUserBean, note);
+        }
+    }
+
+    public void setOnNoteSetListener(OnNoteSetListener listener) {
+        mListener = listener;
+    }
+}
