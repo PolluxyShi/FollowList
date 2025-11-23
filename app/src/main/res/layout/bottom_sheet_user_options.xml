@@ -2,27 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/gray_rounded_corner"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="12dp">
 
     <!-- 用户信息区域 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="16dp">
+        android:paddingStart="10dp"
+        android:paddingBottom="24dp"
+        android:paddingTop="6dp">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="12dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_bottom_sheet_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
                 android:text="王心凌"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -31,7 +34,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:layout_marginStart="12dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -51,7 +53,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
-                    android:background="#DDDDDD"
+                    android:background="#666"
                     android:visibility="visible"/>
 
                 <TextView
@@ -72,7 +74,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@drawable/white_rounded_corner"
+        android:orientation="vertical"
+        android:layout_marginBottom="8dp">
 
         <!-- 特别关注 -->
         <LinearLayout
@@ -80,22 +84,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingVertical="12dp">
+            android:layout_margin="10dp"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="4dp">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_gravity="center_vertical"
                 android:text="特别关注"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="bold"/>
 
             <Switch
                 android:id="@+id/switch_special_follow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:theme="@style/CustomSwitch"/>
 
         </LinearLayout>
+
+        <!-- 分隔线 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"/>
 
         <!-- 设置备注 -->
         <LinearLayout
@@ -103,22 +118,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingVertical="12dp">
+            android:layout_margin="10dp"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="4dp">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_gravity="center_vertical"
                 android:text="设置备注"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="bold"/>
 
             <ImageView
                 android:id="@+id/iv_set_note"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_edit" />
 
         </LinearLayout>
+
+        <!-- 分隔线 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"/>
 
         <!-- 取消关注 -->
         <LinearLayout
@@ -126,19 +152,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingVertical="12dp">
+            android:layout_margin="10dp"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="4dp">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_gravity="center_vertical"
                 android:text="取消关注"
                 android:textSize="14sp"
-                android:textColor="#FF0000" />
+                android:textColor="@color/red"
+                android:textStyle="bold"/>
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_reduce" />
 
         </LinearLayout>

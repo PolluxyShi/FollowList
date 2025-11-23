@@ -2,7 +2,7 @@
 <resources>
     <style name="CustomSwitch" parent="Widget.AppCompat.CompoundButton.Switch">
         <!-- 开启状态的颜色 -->
-        <item name="colorControlActivated">#79c978</item>
+        <item name="colorControlActivated">#7ed321</item>
         <!-- 正常状态的颜色 -->
         <item name="colorSwitchThumbNormal">#BDBDBD</item>
     </style>

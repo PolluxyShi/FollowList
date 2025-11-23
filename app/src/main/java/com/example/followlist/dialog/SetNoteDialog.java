@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -39,6 +41,27 @@ public class SetNoteDialog extends DialogFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        setDialogWidth((float)0.8); // 设置为屏幕宽度的85%
+    }
+
+    /**
+     * 设置对话框宽度
+     * @param widthPercentage 宽度百分比 (0.0 - 1.0)
+     */
+    private void setDialogWidth(float widthPercentage) {
+        Dialog dialog = getDialog();
+        if (dialog != null && dialog.getWindow() != null) {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int dialogWidth = (int) (displayMetrics.widthPixels * widthPercentage);
+            int height = WindowManager.LayoutParams.WRAP_CONTENT;
+            dialog.getWindow().setLayout(dialogWidth, height);
+        }
+    }
+
+    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnNoteSetListener) {
@@ -60,7 +83,14 @@ public class SetNoteDialog extends DialogFragment {
         setupClickListeners();
         builder.setView(view);
 
-        return builder.create();
+        Dialog dialog = builder.create();
+
+        // 设置窗口背景为透明，让自定义圆角生效
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        return dialog;
     }
 
     private void initViews(View view) {
@@ -104,3 +134,4 @@ public class SetNoteDialog extends DialogFragment {
         mListener = listener;
     }
 }
+
