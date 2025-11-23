@@ -16,14 +16,14 @@ public class FollowListDatabaseHelper extends SQLiteOpenHelper {
     // 表名
     public static final String USER_TABLE_NOTES = "users";
     // 列名
-    public static final String COLUMN_USER_ID = "_id";
+    public static final String COLUMN_USER_ID = "user_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_AVATAR_NAME = "avatar_name";
 
     // 创建表的 SQL 语句
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLE_NOTES + " (" +
-                    COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_USER_ID + " VARCHAR(16) PRIMARY KEY, " +
                     COLUMN_NAME + " TEXT NOT NULL, " +
                     COLUMN_AVATAR_NAME + " TEXT NOT NULL" +
                     ");";
@@ -32,7 +32,7 @@ public class FollowListDatabaseHelper extends SQLiteOpenHelper {
     // 表名
     public static final String FOLLOW_RELATION_TABLE_NOTES = "follow_relations";
     // 列名
-    public static final String COLUMN_FOLLOW_RELATION_ID = "_id";
+    public static final String COLUMN_FOLLOW_RELATION_ID = "follow_relation_id";
     public static final String COLUMN_FOLLOWER_ID = "follower_id";
     public static final String COLUMN_FOLLOWED_USER_ID = "followed_user_id";
     public static final String COLUMN_IS_FOLLOW = "is_follow";
@@ -44,8 +44,8 @@ public class FollowListDatabaseHelper extends SQLiteOpenHelper {
     private static final String FOLLOW_RELATION_TABLE_CREATE =
             "CREATE TABLE " + FOLLOW_RELATION_TABLE_NOTES + " (" +
                     COLUMN_FOLLOW_RELATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_FOLLOWER_ID + " INTEGER, " +
-                    COLUMN_FOLLOWED_USER_ID + " INTEGER, " +
+                    COLUMN_FOLLOWER_ID + " VARCHAR(16), " +
+                    COLUMN_FOLLOWED_USER_ID + " VARCHAR(16), " +
                     COLUMN_IS_FOLLOW + " INTEGER, " +
                     COLUMN_IS_SPECIAL_FOLLOW + " INTEGER, " +
                     COLUMN_NOTE + " TEXT, " +
@@ -74,20 +74,20 @@ public class FollowListDatabaseHelper extends SQLiteOpenHelper {
      */
     private void insertUserData(SQLiteDatabase db) {
         String[][] userData = {
-                {"1", "西岚", "avatar_1"},
-                {"2", "孤独的登", "avatar_2"},
-                {"3", "小美省钱路线", "avatar_3"},
-                {"4", "Vladimir_Lobov钢琴", "avatar_4"},
-                {"5", "蓝战非", "avatar_5"},
-                {"6", "九", "avatar_6"},
-                {"7", "糙米薏仁汤女士", "avatar_7"},
-                {"8", "海海呀（ASMR助眠解压 努力版）", "avatar_8"},
-                {"9", "八重神子", "avatar_9"},
-                {"10", "原神", "avatar_10"},
-                {"11", "集宁~古云轩老北京布鞋店的霞姐", "avatar_11"},
-                {"12", "枸杞泡黄芪", "avatar_12"},
-                {"13", "程十安an", "avatar_13"},
-                {"14", "时空之子", "avatar_14"}
+                {"1042689609", "西岚", "avatar_1"},
+                {"93300807617", "孤独的登", "avatar_2"},
+                {"71751220238", "小美省钱路线", "avatar_3"},
+                {"dyprzb66l20d", "Vladimir_Lobov钢琴", "avatar_4"},
+                {"610521233", "蓝战非", "avatar_5"},
+                {"73875880163", "九", "avatar_6"},
+                {"caomiyirenta", "糙米薏仁汤女士", "avatar_7"},
+                {"soul68235", "海海呀（ASMR助眠解压 努力版）", "avatar_8"},
+                {"YaeMiko_627", "八重神子", "avatar_9"},
+                {"yuanshen_mihoyo", "原神", "avatar_10"},
+                {"Aizhiji3139", "集宁~古云轩老北京布鞋店的霞姐", "avatar_11"},
+                {"66013371590", "枸杞泡黄芪", "avatar_12"},
+                {"1950495951", "程十安an", "avatar_13"},
+                {"1285519547", "时空之子", "avatar_14"}
         };
 
         for (String[] user : userData) {
@@ -103,30 +103,30 @@ public class FollowListDatabaseHelper extends SQLiteOpenHelper {
      */
     private void insertFollowRelationData(SQLiteDatabase db) {
         String[][] followRelationData = {
-                {"1", "1", "14", "1", "1", "李子禧", "2025-02-28 10:30:21"},
-                {"2", "1", "13", "1", "0", "", "2023-08-27 22:08:33"},
-                {"3", "1", "12", "1", "0", "", "2025-04-17 15:19:32"},
-                {"4", "1", "11", "1", "0", "", "2022-01-18 09:45:37"},
-                {"5", "1", "10", "1", "0", "", "2025-07-04 08:44:43"},
-                {"6", "1", "9", "1", "0", "", "2024-06-15 03:39:44"},
-                {"7", "1", "8", "1", "0", "", "2024-03-29 12:01:27"},
-                {"8", "1", "7", "1", "1", "", "2022-08-08 04:16:49"},
-                {"9", "1", "6", "1", "0", "", "2021-10-05 14:23:01"},
-                {"10", "1", "5", "1", "0", "", "2022-04-30 20:15:48"},
-                {"11", "1", "4", "1", "0", "", "2023-10-10 13:47:05"},
-                {"12", "1", "3", "1", "0", "", "2023-12-31 23:59:00"},
-                {"13", "7", "2", "1", "0", "", "2023-02-14 11:11:11"},
-                {"14", "7", "1", "1", "1", "", "2024-05-20 06:50:10"},
-                {"15", "7", "14", "1", "0", "", "2022-11-08 05:30:59"},
-                {"16", "7", "13", "1", "0", "", "2021-11-11 17:32:08"},
-                {"17", "14", "12", "1", "0", "", "2025-09-11 21:25:54"},
-                {"18", "14", "11", "1", "0", "", "2024-09-08 19:54:50"},
-                {"19", "14", "10", "1", "1", "", "2022-07-22 16:55:12"},
-                {"20", "14", "9", "1", "0", "", "2024-12-25 00:05:15"},
-                {"21", "14", "8", "1", "0", "", "2023-05-01 18:40:22"},
-                {"22", "14", "7", "1", "0", "", "2025-01-01 00:00:01"},
-                {"23", "14", "6", "1", "0", "", "2024-01-03 07:22:16"},
-                {"24", "14", "5", "1", "1", "", "2025-11-15 14:28:07"}
+                {"1", "1042689609", "1285519547", "1", "1", "李子禧", "2025-02-28 10:30:21"},
+                {"2", "1042689609", "1950495951", "1", "0", "", "2023-08-27 22:08:33"},
+                {"3", "1042689609", "66013371590", "1", "0", "", "2025-04-17 15:19:32"},
+                {"4", "1042689609", "Aizhiji3139", "1", "0", "", "2022-01-18 09:45:37"},
+                {"5", "1042689609", "yuanshen_mihoyo", "1", "0", "", "2025-07-04 08:44:43"},
+                {"6", "1042689609", "YaeMiko_627", "1", "0", "", "2024-06-15 03:39:44"},
+                {"7", "1042689609", "soul68235", "1", "0", "", "2024-03-29 12:01:27"},
+                {"8", "1042689609", "caomiyirenta", "1", "1", "", "2022-08-08 04:16:49"},
+                {"9", "1042689609", "73875880163", "1", "0", "", "2021-10-05 14:23:01"},
+                {"10", "1042689609", "610521233", "1", "0", "", "2022-04-30 20:15:48"},
+                {"11", "1042689609", "dyprzb66l20d", "1", "0", "", "2023-10-10 13:47:05"},
+                {"12", "1042689609", "71751220238", "1", "0", "", "2023-12-31 23:59:00"},
+                {"13", "caomiyirenta", "93300807617", "1", "0", "", "2023-02-14 11:11:11"},
+                {"14", "caomiyirenta", "1042689609", "1", "1", "", "2024-05-20 06:50:10"},
+                {"15", "caomiyirenta", "1285519547", "1", "0", "", "2022-11-08 05:30:59"},
+                {"16", "caomiyirenta", "1950495951", "1", "0", "", "2021-11-11 17:32:08"},
+                {"17", "1285519547", "66013371590", "1", "0", "", "2025-09-11 21:25:54"},
+                {"18", "1285519547", "Aizhiji3139", "1", "0", "", "2024-09-08 19:54:50"},
+                {"19", "1285519547", "yuanshen_mihoyo", "1", "1", "", "2022-07-22 16:55:12"},
+                {"20", "1285519547", "YaeMiko_627", "1", "0", "", "2024-12-25 00:05:15"},
+                {"21", "1285519547", "soul68235", "1", "0", "", "2023-05-01 18:40:22"},
+                {"22", "1285519547", "caomiyirenta", "1", "0", "", "2025-01-01 00:00:01"},
+                {"23", "1285519547", "73875880163", "1", "0", "", "2024-01-03 07:22:16"},
+                {"24", "1285519547", "610521233", "1", "1", "", "2025-11-15 14:28:07"}
         };
 
         for (String[] relation : followRelationData) {

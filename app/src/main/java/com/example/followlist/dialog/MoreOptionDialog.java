@@ -1,10 +1,12 @@
-package com.example.followlist.ui;
+package com.example.followlist.dialog;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -19,13 +21,20 @@ public class MoreOptionDialog extends BottomSheetDialog {
     Switch swSpecialFollow;
     ImageView ivSetNote;
     TextView tvUserName;
+    TextView tvUserId;
+    TextView tvUserOriName;
+    View vDivider;
+
+    LinearLayout llCancelFollow;
+
+    public static String TAG = "MoreOptionDialog";
 
     private OnOptionChangeListener listener;
 
     public interface OnOptionChangeListener {
         void onSpecialFollowChanged(UserBean userBean, boolean isSpecialFollow);
         void onSetNoteClicked(UserBean userBean);
-//        void onCancelFollowClicked(UserBean userBean);
+        void onCancelFollowClicked(UserBean userBean);
     }
 
     public MoreOptionDialog(@NonNull Context context, UserBean userBean, OnOptionChangeListener listener) {
@@ -53,6 +62,10 @@ public class MoreOptionDialog extends BottomSheetDialog {
         swSpecialFollow = findViewById(R.id.switch_special_follow);
         ivSetNote = findViewById(R.id.iv_set_note);
         tvUserName = findViewById(R.id.tv_bottom_sheet_user_name);
+        tvUserId = findViewById(R.id.tv_user_id);
+        tvUserOriName = findViewById(R.id.tv_user_origin_name);
+        vDivider = findViewById(R.id.divider);
+        llCancelFollow = findViewById(R.id.ll_cancel_follow);
     }
 
     private void initEvent(){
@@ -71,10 +84,29 @@ public class MoreOptionDialog extends BottomSheetDialog {
                 listener.onSetNoteClicked(userBean);
             }
         });
+
+        // 取消关注
+        llCancelFollow.setOnClickListener(v -> {
+            dismiss();
+
+            if (listener != null) {
+                listener.onCancelFollowClicked(userBean);
+            }
+        });
+
     }
 
     public void bindData(UserBean userBean){
         tvUserName.setText(userBean.getDisplayName());
+        if (userBean.hasNote()) {
+            tvUserOriName.setText("名字: " + userBean.getUserName());
+            tvUserOriName.setVisibility(View.VISIBLE);
+            vDivider.setVisibility(View.VISIBLE);
+        } else {
+            tvUserOriName.setVisibility(View.GONE);
+            vDivider.setVisibility(View.GONE);
+        }
+        tvUserId.setText("抖音号: " + userBean.getUserId());
         swSpecialFollow.setChecked(userBean.isSpecialFollow());
     }
 }

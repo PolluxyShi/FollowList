@@ -17,18 +17,20 @@ public class FollowListDAO {
     private final FollowListDatabaseHelper dbHelper;
     private final SQLiteDatabase writableDatabase;
 
+    public static String TAG = "FollowListDAO";
+
     public FollowListDAO(Context context) {
         this.dbHelper = new FollowListDatabaseHelper(context);
         this.writableDatabase = dbHelper.getReadableDatabase();
     }
 
-    public User getUserById(int userId) {
+    public User getUserById(String userId) {
         // 1. 定义带占位符的SQL语句（? 为参数占位符，避免SQL注入）
         String sql = "SELECT * FROM " + dbHelper.USER_TABLE_NOTES
                 + " WHERE " + dbHelper.COLUMN_USER_ID + " = ?";
 
         // 2. 定义查询参数（与占位符一一对应，字符串数组）
-        String[] selectionArgs = {String.valueOf(userId)}; // 这里将int转为String
+        String[] selectionArgs = {userId};
 
         // 3. 执行查询
         Cursor cursor = writableDatabase.rawQuery(sql, selectionArgs);
@@ -41,8 +43,8 @@ public class FollowListDAO {
             int nameIndex = cursor.getColumnIndex(dbHelper.COLUMN_NAME);
             int avatarNameIndex = cursor.getColumnIndex(dbHelper.COLUMN_AVATAR_NAME);
 
-            // 根据索引获取对应值（注意字段类型匹配：id是整数，其他是字符串）
-            int id = cursor.getInt(userIdIndex); // COLUMN_ID是整数类型
+            // 根据索引获取对应值
+            String id = cursor.getString(userIdIndex);
             String name = cursor.getString(nameIndex);
             String avatarName = cursor.getString(avatarNameIndex);
             // 打印或处理数据（实际场景可封装为对象、更新UI等）
@@ -62,7 +64,7 @@ public class FollowListDAO {
 
     public List<UserBean> getUserBeanListByUser(User user) {
         List<UserBean> userBeanList = new ArrayList<>();
-        int follower_id = user.getId();
+        String follower_id = user.getId();
         // 1. 定义SQL查询语句（查询所有字段）
         String sql = "SELECT * FROM " + dbHelper.USER_TABLE_NOTES + " u , " + dbHelper.FOLLOW_RELATION_TABLE_NOTES + " fr "
                 + " WHERE " + "u." + dbHelper.COLUMN_USER_ID + " = " + "fr." + dbHelper.COLUMN_FOLLOWED_USER_ID
@@ -70,7 +72,7 @@ public class FollowListDAO {
                 + " ORDER BY " + "fr." + dbHelper.COLUMN_FOLLOW_TIME + " DESC";
 
         // 2. 定义查询参数（与占位符一一对应，字符串数组）
-        String[] selectionArgs = {String.valueOf(follower_id)}; // 这里将int转为String
+        String[] selectionArgs = {follower_id};
 
         // 3. 使用writableDatabase执行查询（rawQuery返回Cursor结果集）
         Cursor cursor = writableDatabase.rawQuery(sql, selectionArgs); // 第二个参数为查询参数（无参数时传null）
@@ -84,8 +86,8 @@ public class FollowListDAO {
                 int nameIndex = cursor.getColumnIndex("u." + dbHelper.COLUMN_NAME);
                 int avatarNameIndex = cursor.getColumnIndex("u." + dbHelper.COLUMN_AVATAR_NAME);
 
-                // 根据索引获取对应值（注意字段类型匹配：id是整数，其他是字符串）
-                int userId = cursor.getInt(userIdIndex); // COLUMN_ID是整数类型
+                // 根据索引获取对应值
+                String userId = cursor.getString(userIdIndex);
                 String name = cursor.getString(nameIndex);
                 String avatarName = cursor.getString(avatarNameIndex);
 
@@ -101,8 +103,8 @@ public class FollowListDAO {
                 int followTimeIndex = cursor.getColumnIndex("fr." + dbHelper.COLUMN_FOLLOW_TIME);
 
                 int followRelationId = cursor.getInt(followRelationIdIndex);
-                int followerId = cursor.getInt(followerIdIndex);
-                int followedUserId = cursor.getInt(followedUserIdIndex);
+                String followerId = cursor.getString(followerIdIndex);
+                String followedUserId = cursor.getString(followedUserIdIndex);
                 int isFollow = cursor.getInt(isFollowIndex);
                 int isSpecialFollow = cursor.getInt(isSpecialFollowIndex);
                 String note = cursor.getString(noteIndex);

@@ -1,4 +1,4 @@
-package com.example.followlist.ui;
+package com.example.followlist.fragment.recyclerview;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +20,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
     public interface OnItemActionListener {
         void onIsFollowClick(int position, UserBean userBean);
         void onMoreClick(int position, UserBean userBean);
-//        void onCommentClick(int position, Item item);
-//        void onShareClick(int position, Item item);
     }
 
     public void setOnItemActionListener(OnItemActionListener listener) {

@@ -5,14 +5,14 @@ import android.os.Parcelable;
 
 public class FollowRelation implements Parcelable {
     private int id;                    // 关系ID
-    private int followerId;         // 关注者ID（当前用户）
-    private int followedUserId;     // 被关注用户ID
+    private String followerId;         // 关注者ID（当前用户）
+    private String followedUserId;     // 被关注用户ID
     private int isFollow;          // 是否关注
     private int isSpecialFollow;   // 是否特别关注
     private String note;               // 备注名
     private String followTime;           // 关注时间戳
 
-    public FollowRelation(int id, int followerId, int followedUserId, int isFollow, int isSpecialFollow, String note, String followTime) {
+    public FollowRelation(int id, String followerId, String followedUserId, int isFollow, int isSpecialFollow, String note, String followTime) {
         this.id = id;
         this.followerId = followerId;
         this.followedUserId = followedUserId;
@@ -24,8 +24,8 @@ public class FollowRelation implements Parcelable {
 
     protected FollowRelation(Parcel in) {
         id = in.readInt();
-        followerId = in.readInt();
-        followedUserId = in.readInt();
+        followerId = in.readString();
+        followedUserId = in.readString();
         isFollow = in.readInt();
         isSpecialFollow = in.readInt();
         note = in.readString();
@@ -52,8 +52,8 @@ public class FollowRelation implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeInt(followerId);
-        dest.writeInt(followedUserId);
+        dest.writeString(followerId);
+        dest.writeString(followedUserId);
         dest.writeInt(isFollow);
         dest.writeInt(isSpecialFollow);
         dest.writeString(note);
@@ -64,10 +64,10 @@ public class FollowRelation implements Parcelable {
     public int getId() { return id; }
 //    public void setId(int id) { this.id = id; }
 
-    public int getFollowerId() { return followerId; }
+    public String getFollowerId() { return followerId; }
 //    public void setFollowerId(int followerId) { this.followerId = followerId; }
 
-    public int getFollowedUserId() { return followedUserId; }
+    public String getFollowedUserId() { return followedUserId; }
 //    public void setFollowedUserId(int followedUserId) { this.followedUserId = followedUserId; }
 
     public boolean isFollow() { return isFollow == 1; }

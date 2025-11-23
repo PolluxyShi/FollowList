@@ -1,13 +1,11 @@
-package com.example.followlist;
+package com.example.followlist.fragment;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,18 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.followlist.R;
 import com.example.followlist.database.FollowListDAO;
-import com.example.followlist.database.FollowListDatabaseHelper;
 import com.example.followlist.model.User;
 import com.example.followlist.model.UserBean;
-import com.example.followlist.ui.MoreOptionDialog;
-import com.example.followlist.ui.SetNoteDialog;
-import com.example.followlist.ui.UserAdapter;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.example.followlist.dialog.MoreOptionDialog;
+import com.example.followlist.dialog.SetNoteDialog;
+import com.example.followlist.fragment.recyclerview.UserAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class FollowingFragment extends Fragment {
     private static final String ARG_POSITION = "position";
@@ -75,36 +71,48 @@ public class FollowingFragment extends Fragment {
 
             @Override
             public void onMoreClick(int position, UserBean userBean) {
-                // 创建卡片
-                MoreOptionDialog moreOptionDialog = new MoreOptionDialog(
-                        requireContext(),
-                        userBean,
-                        new MoreOptionDialog.OnOptionChangeListener() {
-                            @Override
-                            public void onSpecialFollowChanged(UserBean userBean, boolean isSpecialFollow) {
-                                // 更新对象及数据库
-                                mFollowListDAO.setSpecialFollow(userBean, isSpecialFollow);
-                                // 如果需要更新UI
-                                mAdapter.notifyItemChanged(position);
-                            }
+                if (!userBean.isFollow()) {
+                    // 未关注状态下无法弹出MoreOptionDialog
+                    Toast.makeText(requireContext(), "已取关，无法使用", Toast.LENGTH_SHORT).show();
+                } else {
+                    MoreOptionDialog moreOptionDialog = new MoreOptionDialog(
+                            requireContext(),
+                            userBean,
+                            new MoreOptionDialog.OnOptionChangeListener() {
+                                @Override
+                                public void onSpecialFollowChanged(UserBean userBean, boolean isSpecialFollow) {
+                                    // 更新对象及数据库
+                                    mFollowListDAO.setSpecialFollow(userBean, isSpecialFollow);
+                                    // 如果需要更新UI
+                                    mAdapter.notifyItemChanged(position);
+                                }
 
-                            @Override
-                            public void onSetNoteClicked(UserBean userBean) {
-                                // 弹出编辑备注的对话框
-                                SetNoteDialog dialog = SetNoteDialog.newInstance(userBean);
-                                dialog.setOnNoteSetListener(new SetNoteDialog.OnNoteSetListener() {
-                                    @Override
-                                    public void onNoteSet(UserBean userBean, String note) {
-                                        // 更新对象及数据库
-                                        mFollowListDAO.setNote(userBean, note);
-                                        // 更新UI
-                                        mAdapter.notifyItemChanged(position);
-                                    }
-                                });
-                                dialog.show(getParentFragmentManager(), "SetNoteDialog");
-                            }
-                        });
-                moreOptionDialog.show();
+                                @Override
+                                public void onSetNoteClicked(UserBean userBean) {
+                                    // 弹出编辑备注的对话框
+                                    SetNoteDialog dialog = SetNoteDialog.newInstance(userBean);
+                                    dialog.setOnNoteSetListener(new SetNoteDialog.OnNoteSetListener() {
+                                        @Override
+                                        public void onNoteSet(UserBean userBean, String note) {
+                                            // 更新对象及数据库
+                                            mFollowListDAO.setNote(userBean, note);
+                                            // 更新UI
+                                            mAdapter.notifyItemChanged(position);
+                                        }
+                                    });
+                                    dialog.show(getParentFragmentManager(), "SetNoteDialog");
+                                }
+
+                                @Override
+                                public void onCancelFollowClicked(UserBean userBean) {
+                                    // 更新对象及数据库
+                                    mFollowListDAO.changeFollow(userBean);
+                                    // 更新UI
+                                    mAdapter.notifyItemChanged(position);
+                                }
+                            });
+                    moreOptionDialog.show();
+                }
             }
         });
     }
@@ -171,8 +179,8 @@ public class FollowingFragment extends Fragment {
     }
 
     private void createUserList() {
-        // 默认 id=1 的用户为当前用户
-        mCurrentUser = mFollowListDAO.getUserById(1);
+        // 默认 id=1042689609 的用户为当前用户
+        mCurrentUser = mFollowListDAO.getUserById("1042689609");
         mUserList = mFollowListDAO.getUserBeanListByUser(mCurrentUser);
     }
 }

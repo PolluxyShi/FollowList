@@ -1,9 +1,12 @@
-package com.example.followlist;
+package com.example.followlist.viewpager;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.example.followlist.fragment.BlankFragment;
+import com.example.followlist.fragment.FollowingFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
     private static final int PAGE_COUNT = 4; // 4个页面

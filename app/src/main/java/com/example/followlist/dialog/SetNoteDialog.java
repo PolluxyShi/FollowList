@@ -1,18 +1,14 @@
 // SetNoteDialog.java
-package com.example.followlist.ui;
+package com.example.followlist.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -21,11 +17,10 @@ import androidx.fragment.app.DialogFragment;
 import com.example.followlist.R;
 import com.example.followlist.model.UserBean;
 
-import java.io.Serializable;
-
 public class SetNoteDialog extends DialogFragment {
     private UserBean mUserBean;
     private OnNoteSetListener mListener;
+    private TextView mOriName;
     private EditText mEditTextNote;
     private Button mBtnCancel, mBtnConfirm;
 
@@ -69,14 +64,19 @@ public class SetNoteDialog extends DialogFragment {
     }
 
     private void initViews(View view) {
+        mOriName = view.findViewById(R.id.tv_ori_name);
         mEditTextNote = view.findViewById(R.id.et_note);
         mBtnCancel = view.findViewById(R.id.btn_cancel);
         mBtnConfirm = view.findViewById(R.id.btn_confirm);
 
-        // 设置当前备注
-        if (mUserBean != null && !TextUtils.isEmpty(mUserBean.getNote())) {
-            mEditTextNote.setText(mUserBean.getNote());
-            mEditTextNote.setSelection(mUserBean.getNote().length());
+        String displayName = mUserBean.getDisplayName();
+        mEditTextNote.setText(displayName);
+        mEditTextNote.setSelection(displayName.length());
+
+        // 判断是否显示原名
+        if (mUserBean != null && mUserBean.hasNote()) {
+            mOriName.setText("名字: " + mUserBean.getUserName());
+            mOriName.setVisibility(View.VISIBLE);
         }
     }
 

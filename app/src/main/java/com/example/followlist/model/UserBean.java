@@ -2,13 +2,17 @@ package com.example.followlist.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class UserBean implements Parcelable {
     private User user;                  // 用户基本信息
     private FollowRelation followRelation; // 关注关系信息
+
+    public static String TAG = "UserBean";
 
     public UserBean(User user, FollowRelation followRelation) {
         this.user = user;
@@ -48,22 +52,29 @@ public class UserBean implements Parcelable {
         return user.getAvatarName();
     }
 
+    public String getUserId() { return user.getId(); }
+    public String getUserName() { return  user.getName(); }
     public String getNote() {
         return followRelation.getNote();
     }
 
     public void setNote(String note) {
-        followRelation.setNote(note);
+        if (Objects.equals(note, user.getName())) {
+            followRelation.setNote("");
+        } else {
+            followRelation.setNote(note);
+        }
+    }
+
+    public boolean hasNote() {
+        String note = followRelation.getNote();
+        return  note != null && !note.isEmpty();
     }
 
     public String getDisplayName() {
         return followRelation.getNote() != null && !followRelation.getNote().isEmpty()
                 ? followRelation.getNote()
                 : user.getName();
-    }
-
-    public void setDisplayName (String note) {
-        followRelation.setNote(note);
     }
 
     public boolean isFollow() {

@@ -1,13 +1,10 @@
-package com.example.followlist.ui;
-
-import static androidx.core.content.ContentProviderCompat.requireContext;
+package com.example.followlist.fragment.recyclerview;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
