@@ -49,25 +49,30 @@
 
 ```
 app/src/main/java/com/example/followlist/
-├── MainActivity.java                   # 主Activity，包含ViewPager2和TabLayout
-├── database/                           # 数据库相关
-│   ├── FollowListDatabaseHelper.java           # SQLite数据库帮助类
-│   └── FollowListDAO.java                      # 数据访问对象，封装数据库操作
-├── fragment/                           # Fragment相关
-│   ├── FollowingFragment.java                  # 关注列表Fragment（主要功能页面）
-│   ├── BlankFragment.java                      # 占位Fragment
-│   └── recyclerview/
-│       ├── UserAdapter.java                            # RecyclerView适配器
-│       └── UserViewHolder.java                         # ViewHolder
-├── model/                              # 数据模型
-│   ├── User.java                               # 用户基本信息模型
-│   ├── FollowRelation.java                     # 关注关系模型
-│   └── UserBean.java                           # 用户列表项模型（User+FollowRelation）
-├── dialog/                             # 对话框
-│   ├── MoreOptionDialog.java                   # 更多选项对话框
-│   └── SetNoteDialog.java                      # 设置备注对话框
-└── viewpager/
-    └── ViewPagerAdapter.java           # ViewPager2适配器
+│
+├── data/
+│   ├── model/                              # 数据模型
+│   │   ├── User.java                               # 用户基本信息模型
+│   │   ├── FollowRelation.java                     # 关注关系模型
+│   │   └── UserBean.java                           # 用户列表项模型（User+FollowRelation）
+│   └── database/                           # 数据库相关
+│       ├── FollowListDatabaseHelper.java           # SQLite数据库帮助类
+│       └── FollowListDAO.java                      # 数据访问对象，封装数据库操作
+│
+├── ui/
+│   ├── fragment/                           # Fragment相关
+│   │   ├── FollowingFragment.java                  # 关注列表Fragment（主要功能页面）
+│   │   ├── BlankFragment.java                      # 占位Fragment
+│   │   └── recyclerview/                           # RecyclerView相关
+│   │       ├── UserAdapter.java                            # RecyclerView适配器
+│   │       └── UserViewHolder.java                         # ViewHolder
+│   ├── dialog/                             # Dialog相关
+│   │   ├── MoreOptionDialog.java                   # 更多选项对话框
+│   │   └── SetNoteDialog.java                      # 设置备注对话框
+│   └── viewpager/                          # ViewPager相关
+│       └── ViewPagerAdapter.java                   # ViewPager2适配器
+│
+└── MainActivity.java                   # 主Activity，包含ViewPager2和TabLayout
 ```
 
 ### 3.3 数据库设计
