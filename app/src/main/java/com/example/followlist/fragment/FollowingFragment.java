@@ -61,6 +61,7 @@ public class FollowingFragment extends Fragment {
 
         // 设置监听器
         mAdapter.setOnItemActionListener(new UserAdapter.OnItemActionListener() {
+            // 关注/取消关注
             @Override
             public void onIsFollowClick(int position, UserBean userBean) {
                 // 更新对象及数据库
@@ -69,6 +70,7 @@ public class FollowingFragment extends Fragment {
                 mAdapter.notifyItemChanged(position);
             }
 
+            // 打开更多
             @Override
             public void onMoreClick(int position, UserBean userBean) {
                 if (!userBean.isFollow()) {
@@ -79,6 +81,7 @@ public class FollowingFragment extends Fragment {
                             requireContext(),
                             userBean,
                             new MoreOptionDialog.OnOptionChangeListener() {
+                                // 设置特别关注
                                 @Override
                                 public void onSpecialFollowChanged(UserBean userBean, boolean isSpecialFollow) {
                                     // 更新对象及数据库
@@ -87,6 +90,7 @@ public class FollowingFragment extends Fragment {
                                     mAdapter.notifyItemChanged(position);
                                 }
 
+                                // 设置备注
                                 @Override
                                 public void onSetNoteClicked(UserBean userBean) {
                                     // 弹出编辑备注的对话框
@@ -103,6 +107,7 @@ public class FollowingFragment extends Fragment {
                                     dialog.show(getParentFragmentManager(), "SetNoteDialog");
                                 }
 
+                                // 取消关注
                                 @Override
                                 public void onCancelFollowClicked(UserBean userBean) {
                                     // 更新对象及数据库
@@ -154,6 +159,19 @@ public class FollowingFragment extends Fragment {
         });
     }
 
+    private void createUserList() {
+        // 默认 id=1042689609 的用户为当前用户
+        mCurrentUser = mFollowListDAO.getUserById("1042689609");
+        mUserList = mFollowListDAO.getUserBeanListByUser(mCurrentUser);
+    }
+
+    private void updateFollowCount() {
+        TextView tv_followNum = getView().findViewById(R.id.tv_followNum);
+        if (tv_followNum != null) {
+            tv_followNum.setText("我的关注（" + mAdapter.getItemCount() + "人）");
+        }
+    }
+
     private void updateUserList() {
         // 删除数据库中的非关注条目
         mFollowListDAO.deleteFollowRelation(mUserList);
@@ -169,18 +187,5 @@ public class FollowingFragment extends Fragment {
         mSwipeRefreshLayout.setRefreshing(false);
 //        // 可选：显示刷新完成的提示
 //        Toast.makeText(MainActivity.this, "刷新完成", Toast.LENGTH_SHORT).show();
-    }
-
-    private void updateFollowCount() {
-        TextView tv_followNum = getView().findViewById(R.id.tv_followNum);
-        if (tv_followNum != null) {
-            tv_followNum.setText("我的关注（" + mAdapter.getItemCount() + "人）");
-        }
-    }
-
-    private void createUserList() {
-        // 默认 id=1042689609 的用户为当前用户
-        mCurrentUser = mFollowListDAO.getUserById("1042689609");
-        mUserList = mFollowListDAO.getUserBeanListByUser(mCurrentUser);
     }
 }

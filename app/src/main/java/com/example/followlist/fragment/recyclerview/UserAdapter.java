@@ -77,20 +77,5 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
     public int getItemCount() {
         return mUserList != null ? mUserList.size() : 0;
     }
-
-//    // 提供更新单个UserBean的方法
-//    public void updateUserBean(int position, UserBean userBean) {
-//        if (position >= 0 && position < mUserList.size()) {
-//            mUserList.set(position, userBean);
-//            notifyItemChanged(position);
-//        }
-//    }
-//
-//    // 数据更新（后续刷新列表用）
-//    public void updateData(List<UserBean> newUserList) {
-//        this.mUserList = newUserList;
-//        // 通知RecyclerView数据已变更
-//        notifyDataSetChanged();
-//    }
 }
 
