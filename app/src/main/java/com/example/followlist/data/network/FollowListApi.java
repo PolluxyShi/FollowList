@@ -10,13 +10,13 @@ public interface FollowListApi {
     /**
      * 获取关注列表（分页）
      * @param page 页码（从1开始）
-     * @param pageSize 每页大小
      * @return API响应
      */
-    ApiResponse getFollowingList(int page, int pageSize);
+    ApiResponse getFollowingList(int page);
 
     /**
      * 获取关注列表总数据量
+     * * @return 总数据量
      */
     int getTotal();
 

@@ -128,6 +128,7 @@ public class MockFollowListApi implements FollowListApi {
 
     /**
      * 获取关注列表总数据量
+     * * @return 总数据量
      */
     @Override
     public int getTotal() {
@@ -166,10 +167,9 @@ public class MockFollowListApi implements FollowListApi {
     /**
      * 同步获取关注列表
      * @param page 页码
-     * @param pageSize 每页大小
      */
     @Override
-    public ApiResponse getFollowingList(int page, int pageSize) {
+    public ApiResponse getFollowingList(int page) {
         if (page == 1) {
             // 执行刷新操作
             // 先过滤再排序
@@ -187,27 +187,26 @@ public class MockFollowListApi implements FollowListApi {
 
         int current_total_users = getTotal();
 
-        int startIndex = (page - 1) * pageSize;
-        int endIndex = Math.min(startIndex + pageSize, current_total_users);
+        int startIndex = (page - 1) * PAGE_SIZE;
+        int endIndex = Math.min(startIndex + PAGE_SIZE, current_total_users);
         
         if (startIndex >= allUsers.size()) {
             // 超出范围，返回空列表
-            return new ApiResponse(new ArrayList<>(), current_total_users, page, pageSize, false);
+            return new ApiResponse(new ArrayList<>(), current_total_users, page, PAGE_SIZE, false);
         }
         
         List<UserBean> pageData = new ArrayList<>(allUsers.subList(startIndex, endIndex));
         boolean hasMore = endIndex < allUsers.size();
         
-        return new ApiResponse(pageData, current_total_users, page, pageSize, hasMore);
+        return new ApiResponse(pageData, current_total_users, page, PAGE_SIZE, hasMore);
     }
     
     /**
      * 异步获取关注列表（带回调）
      * @param page 页码
-     * @param pageSize 每页大小
      * @param callback 回调接口
      */
-    public void getFollowingListAsync(int page, int pageSize, ApiCallback callback) {
+    public void getFollowingListAsync(int page, ApiCallback callback) {
         // 在后台线程模拟网络延迟
         new Thread(() -> {
             try {
@@ -218,7 +217,7 @@ public class MockFollowListApi implements FollowListApi {
             }
             
             // 获取数据
-            ApiResponse response = getFollowingList(page, pageSize);
+            ApiResponse response = getFollowingList(page);
             
             // 切换到主线程回调
             mainHandler.post(() -> {
