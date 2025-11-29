@@ -93,6 +93,10 @@ public class FollowingFragment extends Fragment {
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        // 性能优化设置
+        mRecyclerView.setHasFixedSize(true); // 如果列表项高度固定，RecyclerView 会跳过 onMeasure() 的重新计算，可以提升性能
+        mRecyclerView.setItemViewCacheSize(20); // 增加缓存数量，缓存刚刚滚出屏幕的 View，当用户反向滚动时可以直接复用
+
         mAdapter = new UserAdapter(mUserList);
         mRecyclerView.setAdapter(mAdapter);
 
