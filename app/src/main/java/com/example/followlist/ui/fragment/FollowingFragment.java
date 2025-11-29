@@ -57,8 +57,47 @@ public class FollowingFragment extends Fragment {
         initData();
         initViews();
         setupSwipeRefresh();
+        setupItemListeners();
+    }
 
-        // 设置监听器
+    private void initData() {
+        mUserList = new ArrayList<>();
+        mFollowListDAO = new FollowListDAO(requireContext());
+        createUserList();
+    }
+
+    private void initViews() {
+        mSwipeRefreshLayout = getView().findViewById(R.id.swipeRefreshLayout);
+        mRecyclerView = getView().findViewById(R.id.recyclerview_id);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mAdapter = new UserAdapter(mUserList);
+        mRecyclerView.setAdapter(mAdapter);
+
+        updateFollowCount();
+    }
+
+    private void setupSwipeRefresh() {
+        // 设置刷新时动画的颜色
+        mSwipeRefreshLayout.setColorSchemeResources(
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light
+        );
+
+        // 设置下拉刷新的监听器
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 执行刷新操作
+                updateUserList();
+            }
+        });
+    }
+
+    private void setupItemListeners() {
         mAdapter.setOnItemActionListener(new UserAdapter.OnItemActionListener() {
             // 关注/取消关注
             @Override
@@ -120,44 +159,6 @@ public class FollowingFragment extends Fragment {
             }
         });
     }
-
-    private void initData() {
-        mUserList = new ArrayList<>();
-        mFollowListDAO = new FollowListDAO(requireContext());
-        createUserList();
-    }
-
-    private void initViews() {
-        mSwipeRefreshLayout = getView().findViewById(R.id.swipeRefreshLayout);
-        mRecyclerView = getView().findViewById(R.id.recyclerview_id);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mAdapter = new UserAdapter(mUserList);
-        mRecyclerView.setAdapter(mAdapter);
-
-        updateFollowCount();
-    }
-
-    private void setupSwipeRefresh() {
-        // 设置刷新时动画的颜色
-        mSwipeRefreshLayout.setColorSchemeResources(
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light
-        );
-
-        // 设置下拉刷新的监听器
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // 执行刷新操作
-                updateUserList();
-            }
-        });
-    }
-
     private void createUserList() {
         // 默认 id=1042689609 的用户为当前用户
         mCurrentUser = mFollowListDAO.getUserById("1042689609");
