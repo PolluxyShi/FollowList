@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.followlist.R;
 import com.example.followlist.data.model.UserBean;
 import com.example.followlist.data.network.ApiResponse;
@@ -71,6 +72,7 @@ public class FollowingFragment extends Fragment {
         initData();
         initViews();
         setupSwipeRefresh();
+        setupRecyclerViewScrollListener();
         setupItemListeners();
 
         // 初始加载第一页数据
@@ -113,6 +115,62 @@ public class FollowingFragment extends Fragment {
             mHasMore = true;
             loadMoreData(true);
         });
+    }
+
+    /**
+     * 设置 RecyclerView 滚动监听，实现分页加载和头像预加载
+     */
+    private void setupRecyclerViewScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // 预加载：当距离底部还有3个item时开始加载
+                int visibleItemCount = mLayoutManager.getChildCount();
+                int totalItemCount = mLayoutManager.getItemCount();
+                int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
+
+                // 如果还有更多数据且不在加载中，且接近底部
+                if (!mIsLoading && mHasMore) {
+                    if (firstVisibleItemPosition + visibleItemCount >= totalItemCount - 3) {
+                        loadMoreData(false);
+                    }
+                }
+
+                // 头像预加载：预加载即将显示的item的头像
+                preloadAvatars(firstVisibleItemPosition, visibleItemCount);
+            }
+        });
+    }
+
+    /**
+     * 预加载即将显示的头像
+     * @param firstVisiblePosition 第一个可见位置
+     * @param visibleCount 可见item数量
+     */
+    private void preloadAvatars(int firstVisiblePosition, int visibleCount) {
+        // 预加载当前可见区域前后各5个item的头像
+        int preloadStart = Math.max(0, firstVisiblePosition - 5);
+        int preloadEnd = Math.min(mUserList.size(), firstVisiblePosition + visibleCount + 5);
+
+        Context context = requireContext();
+        for (int i = preloadStart; i < preloadEnd && i < mUserList.size(); i++) {
+            UserBean userBean = mUserList.get(i);
+            String avatarName = userBean.getAvatarName();
+            int avatarResId = context.getResources().getIdentifier(
+                    avatarName,
+                    "drawable",
+                    context.getPackageName()
+            );
+
+            if (avatarResId != 0) {
+                // 使用 Glide 预加载图片到内存缓存
+                Glide.with(context)
+                        .load(avatarResId)
+                        .preload(); // 预加载到内存缓存
+            }
+        }
     }
 
     /**
