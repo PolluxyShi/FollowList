@@ -1,6 +1,10 @@
 package com.example.followlist.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +37,16 @@ public class FollowingFragment extends Fragment {
     private UserAdapter mAdapter;
     private MockFollowListApi mApi;
 
+    // 分页相关
+    private int mCurrentPage = 1;
+    private boolean mIsLoading = false;
+    private boolean mHasMore = true;
+    private LinearLayoutManager mLayoutManager;
+
+    private final Handler mMainHandler = new Handler(Looper.getMainLooper());
+
+    public static String TAG = "FollowingFragment";
+
     public static FollowingFragment newInstance(int position) {
         FollowingFragment fragment = new FollowingFragment();
         Bundle args = new Bundle();
@@ -58,24 +72,29 @@ public class FollowingFragment extends Fragment {
         initViews();
         setupSwipeRefresh();
         setupItemListeners();
+
+        // 初始加载第一页数据
+        loadMoreData(true);
     }
 
     private void initData() {
         mUserList = new ArrayList<>();
-        mFollowListDAO = new FollowListDAO(requireContext());
-        createUserList();
+        mApi = new MockFollowListApi();
     }
 
     private void initViews() {
+        assert getView() != null;
         mSwipeRefreshLayout = getView().findViewById(R.id.swipeRefreshLayout);
         mRecyclerView = getView().findViewById(R.id.recyclerview_id);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mLayoutManager = new LinearLayoutManager(requireContext());
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
         mAdapter = new UserAdapter(mUserList);
         mRecyclerView.setAdapter(mAdapter);
 
-        updateFollowCount();
+        updateFollowCount(mApi.getTotal());
     }
 
     private void setupSwipeRefresh() {
@@ -88,12 +107,11 @@ public class FollowingFragment extends Fragment {
         );
 
         // 设置下拉刷新的监听器
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // 执行刷新操作
-                updateUserList();
-            }
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            // 重置分页状态
+            mCurrentPage = 1;
+            mHasMore = true;
+            loadMoreData(true);
         });
     }
 
@@ -102,9 +120,62 @@ public class FollowingFragment extends Fragment {
      * @param isRefresh 是否是刷新操作
      */
     private void loadMoreData(boolean isRefresh) {
-        // TODO
-    }
+        if (mIsLoading) {
+            return;
+        }
 
+        mIsLoading = true;
+        mAdapter.setLoading(true);
+
+        // 如果是刷新，重置页码
+        if (isRefresh) {
+            mCurrentPage = 1;
+        }
+
+        // 异步加载数据
+        mApi.getFollowingListAsync(mCurrentPage,
+                new MockFollowListApi.ApiCallback() {
+                    @Override
+                    public void onSuccess(ApiResponse response) {
+                        mMainHandler.post(() -> {
+                            // 添加调试日志
+                            Log.d(TAG, "加载成功，数据量: " +
+                                    (response.getData() != null ? response.getData().size() : 0));
+                            Log.d(TAG, "是否有更多数据: " + response.isHasMore());
+                            Log.d(TAG, "总数量: " + response.getTotal());
+
+                            mIsLoading = false;
+                            mAdapter.setLoading(false);
+
+                            if (isRefresh) {
+                                mSwipeRefreshLayout.setRefreshing(false);
+                                // 在成功回调中一次性更新数据
+                                mAdapter.setData(response.getData());
+                            } else {
+                                // 加载更多时追加数据
+                                mAdapter.addData(response.getData());
+                            }
+
+                            mHasMore = response.isHasMore();
+                            mAdapter.setHasMore(mHasMore);
+                            mCurrentPage++;
+                            updateFollowCount(response.getTotal());
+                        });
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        mMainHandler.post(() -> {
+                            mIsLoading = false;
+                            mAdapter.setLoading(false);
+                            if (isRefresh) {
+                                mSwipeRefreshLayout.setRefreshing(false);
+                            }
+                            Toast.makeText(requireContext(), "加载失败: " + error, Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                });
+    }
 
     private void setupItemListeners() {
         mAdapter.setOnItemActionListener(new UserAdapter.OnItemActionListener() {
@@ -168,33 +239,12 @@ public class FollowingFragment extends Fragment {
             }
         });
     }
-    private void createUserList() {
-        // 默认 id=1042689609 的用户为当前用户
-        mCurrentUser = mFollowListDAO.getUserById("1042689609");
-        mUserList = mFollowListDAO.getUserBeanListByUser(mCurrentUser);
-    }
 
-    private void updateFollowCount() {
+    private void updateFollowCount(int cnt) {
+        assert getView() != null;
         TextView tv_followNum = getView().findViewById(R.id.tv_followNum);
         if (tv_followNum != null) {
-            tv_followNum.setText("我的关注（" + mAdapter.getItemCount() + "人）");
+            tv_followNum.setText("我的关注（" + cnt + "人）");
         }
-    }
-
-    private void updateUserList() {
-        // 删除数据库中的非关注条目
-        mFollowListDAO.deleteFollowRelation(mUserList);
-        // 清空UserBaan列表
-        mUserList.clear();
-        // 重新加载UserBaan列表
-        mUserList.addAll(mFollowListDAO.getUserBeanListByUser(mCurrentUser));
-        // 更新关注人数显示
-        updateFollowCount();
-        // 通知适配器数据已更新
-        mAdapter.notifyDataSetChanged();
-        // 停止刷新动画
-        mSwipeRefreshLayout.setRefreshing(false);
-//        // 可选：显示刷新完成的提示
-//        Toast.makeText(MainActivity.this, "刷新完成", Toast.LENGTH_SHORT).show();
     }
 }
