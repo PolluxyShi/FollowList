@@ -97,6 +97,15 @@ public class FollowingFragment extends Fragment {
         });
     }
 
+    /**
+     * 加载更多数据
+     * @param isRefresh 是否是刷新操作
+     */
+    private void loadMoreData(boolean isRefresh) {
+        // TODO
+    }
+
+
     private void setupItemListeners() {
         mAdapter.setOnItemActionListener(new UserAdapter.OnItemActionListener() {
             // 关注/取消关注
