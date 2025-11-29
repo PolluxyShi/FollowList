@@ -26,6 +26,7 @@ import com.example.followlist.data.network.MockFollowListApi;
 import com.example.followlist.ui.dialog.MoreOptionDialog;
 import com.example.followlist.ui.dialog.SetNoteDialog;
 import com.example.followlist.ui.fragment.recyclerview.UserAdapter;
+import com.example.followlist.ui.fragment.recyclerview.UserViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,12 +169,14 @@ public class FollowingFragment extends Fragment {
                     context.getPackageName()
             );
 
-            if (avatarResId != 0) {
-                // 使用 Glide 预加载图片到内存缓存
-                Glide.with(context)
-                        .load(avatarResId)
-                        .preload(); // 预加载到内存缓存
+            if (avatarResId == 0) {
+                avatarResId = R.drawable.avatar_0;
             }
+
+            Glide.with(context)
+                    .load(avatarResId)
+                    .apply(UserViewHolder.AVATAR_OPTIONS)
+                    .preload();
         }
     }
 
