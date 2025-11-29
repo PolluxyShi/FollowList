@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.followlist.R;
-import com.example.followlist.data.database.FollowListDAO;
-import com.example.followlist.data.model.User;
 import com.example.followlist.data.model.UserBean;
+import com.example.followlist.data.network.ApiResponse;
+import com.example.followlist.data.network.MockFollowListApi;
 import com.example.followlist.ui.dialog.MoreOptionDialog;
 import com.example.followlist.ui.dialog.SetNoteDialog;
 import com.example.followlist.ui.fragment.recyclerview.UserAdapter;
@@ -29,10 +29,9 @@ public class FollowingFragment extends Fragment {
     private static final String ARG_POSITION = "position";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
-    private User mCurrentUser;
     private List<UserBean> mUserList;
-    private FollowListDAO mFollowListDAO;
     private UserAdapter mAdapter;
+    private MockFollowListApi mApi;
 
     public static FollowingFragment newInstance(int position) {
         FollowingFragment fragment = new FollowingFragment();
@@ -64,8 +63,8 @@ public class FollowingFragment extends Fragment {
             // 关注/取消关注
             @Override
             public void onIsFollowClick(int position, UserBean userBean) {
-                // 更新对象及数据库
-                mFollowListDAO.changeFollow(userBean);
+                // 更新数据
+                mApi.setFollow(userBean);
                 // 更新UI
                 mAdapter.notifyItemChanged(position);
             }
@@ -84,8 +83,8 @@ public class FollowingFragment extends Fragment {
                                 // 设置特别关注
                                 @Override
                                 public void onSpecialFollowChanged(UserBean userBean, boolean isSpecialFollow) {
-                                    // 更新对象及数据库
-                                    mFollowListDAO.setSpecialFollow(userBean, isSpecialFollow);
+                                    // 更新数据
+                                    mApi.setSpecialFollow(userBean, isSpecialFollow);
                                     // 如果需要更新UI
                                     mAdapter.notifyItemChanged(position);
                                 }
@@ -98,8 +97,8 @@ public class FollowingFragment extends Fragment {
                                     dialog.setOnNoteSetListener(new SetNoteDialog.OnNoteSetListener() {
                                         @Override
                                         public void onNoteSet(UserBean userBean, String note) {
-                                            // 更新对象及数据库
-                                            mFollowListDAO.setNote(userBean, note);
+                                            // 更新数据
+                                            mApi.setNote(userBean, note);
                                             // 更新UI
                                             mAdapter.notifyItemChanged(position);
                                         }
@@ -110,8 +109,8 @@ public class FollowingFragment extends Fragment {
                                 // 取消关注
                                 @Override
                                 public void onCancelFollowClicked(UserBean userBean) {
-                                    // 更新对象及数据库
-                                    mFollowListDAO.changeFollow(userBean);
+                                    // 更新数据
+                                    mApi.setFollow(userBean);
                                     // 更新UI
                                     mAdapter.notifyItemChanged(position);
                                 }
